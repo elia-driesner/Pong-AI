@@ -15,7 +15,7 @@ class GameInformation:
 class Game():
     def __init__(self, window):
         # initializing variables
-        self.FPS = 1000
+        self.FPS = 10000
         self.WINDOW_SIZE = [1100, 700]
         self.SCORE_FONT = pygame.font.SysFont("comicsans", 50)
 

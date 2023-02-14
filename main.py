@@ -2,7 +2,7 @@ import pygame
 from pong import Game
 import neat
 import os
-import random
+import pickle
 
 
 class PongGame():
@@ -14,10 +14,6 @@ class PongGame():
         self.ball = self.game.ball
         self.run = True
         
-    def test_ai(self):
-        self.game.loop()
-        self.game.draw()
-        # move ai
         
     def playerVsPlayer(self):
         while self.run:
@@ -36,7 +32,6 @@ class PongGame():
             decision1 = output1.index(max(output1))
             output2 = net2.activate((self.game.paddle_right.y, self.game.ball.y, abs(self.game.paddle_right.x - self.game.ball.x)))
             decision2 = output2.index(max(output2))
-            print(decision1, decision2)
             self.game.ai_move(decision1, decision2)
             
             game_info = self.game.loop()
@@ -49,6 +44,15 @@ class PongGame():
     def calculate_fitness(self, genome1, genome2, game_info):
         genome1.fitness += game_info.left_hits
         genome2.fitness += game_info.right_hits
+    
+    def test_ai(self, genome, config):
+        net = neat.nn.FeedForwardNetwork.create(genome, config)
+        while self.run:
+            output = net.activate((self.game.paddle_right.y, self.game.ball.y, abs(self.game.paddle_right.x - self.game.ball.x)))
+            decision = output.index(max(output))
+            self.player_ai_move(decision)
+            game_info = self.game.loop()
+            self.game.draw('score')
 
 def eval_genomes(genomes, config):
     WINDOW_SIZE = [1100, 700]
@@ -73,6 +77,16 @@ def run_neat(config):
     p.add_reporter(neat.Checkpointer(1))
     
     winner = p.run(eval_genomes, 50)
+    with open("best.pickle", "wb") as f:
+        pickle.dump(winner, f)
+        
+def test_best_network(config):
+    with open("best.pickle", "rb") as f:
+        winner = pickle.load(f)
+    winner_net = neat.nn.FeedForwardNetwork.create(winner, config)
+
+    pong = PongGame(pygame.display.set_mode([1100, 700]))
+    pong.test_ai(config)
             
 if __name__ == "__main__":
     local_dir = os.path.dirname(__file__)
@@ -83,6 +97,6 @@ if __name__ == "__main__":
                          config_path)
     
     run_neat(config)
+    # test_best_network(config)
     
-    # pong = PongGame(pygame.display.set_mode([1100, 700]))
-    # pong.playerVsPlayer()
+    
