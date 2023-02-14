@@ -4,15 +4,23 @@ pygame.init()
 
 from .ball import Ball
 from .paddle import Paddle
+
+class GameInformation:
+    def __init__(self, left_hits, right_hits, left_score, right_score):
+        self.left_hits = left_hits
+        self.right_hits = right_hits
+        self.left_score = left_score
+        self.right_score = right_score
     
 class Game():
-    def __init__(self):
+    def __init__(self, window):
         # initializing variables
         self.FPS = 60
         self.WINDOW_SIZE = [1100, 700]
         self.SCORE_FONT = pygame.font.SysFont("comicsans", 50)
 
-        self.window = pygame.display.set_mode(self.WINDOW_SIZE)
+        self.window = window
+        # self.window = pygame.display.set_mode(self.WINDOW_SIZE)
         pygame.display.set_caption('Pong AI')
         self.clock = pygame.time.Clock()
 
@@ -22,6 +30,8 @@ class Game():
         
         self.left_score = 0
         self.right_score = 0
+        self.left_hits = 0
+        self.right_hits = 0
         
     def collision(self):
         if self.ball.y <= 0:
@@ -38,10 +48,12 @@ class Game():
         
         collide = pygame.Rect.colliderect(self.paddle_left.rect, self.ball.rect)
         if collide:
+            self.left_hits += 1
             self.ball.x_speed *= -1
         
         collide = pygame.Rect.colliderect(self.paddle_right.rect, self.ball.rect)
         if collide:
+            self.right_hits += 1
             self.ball.x_speed *= -1    
     
     def draw_dashed_line(self, start, end):
@@ -73,12 +85,10 @@ class Game():
         self.window.fill((0, 0, 0))
     
     def move(self):
-        self.ball.move()
         self.paddle_left.move(self.WINDOW_SIZE, 'left')
         self.paddle_right.move(self.WINDOW_SIZE, 'right')
         
     def player_ai_move(self, direction):
-        self.ball.move()
         self.paddle_left.move(self.WINDOW_SIZE, 'left')
         self.paddle_right.ai_move(direction, self.WINDOW_SIZE, 'right')
     
@@ -89,8 +99,14 @@ class Game():
                 run = False
                 pygame.quit()
                 sys.exit()
-        
+                
+        self.ball.move()
         self.collision()          
         # self.move()
-        self.draw()
+        # self.draw()
+        
+        game_info = GameInformation(
+            self.left_hits, self.right_hits, self.left_score, self.right_score)
+
+        return game_info
         
