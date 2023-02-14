@@ -22,6 +22,7 @@ class PongGame():
             self.game.draw()
     
     def train_ai(self, genome1, genome2, config):
+        self.game.FPS = 10000
         net1 = neat.nn.FeedForwardNetwork.create(genome1, config)
         net2 = neat.nn.FeedForwardNetwork.create(genome2, config)
         
@@ -50,7 +51,7 @@ class PongGame():
         while self.run:
             output = net.activate((self.game.paddle_right.y, self.game.ball.y, abs(self.game.paddle_right.x - self.game.ball.x)))
             decision = output.index(max(output))
-            self.player_ai_move(decision)
+            self.game.player_ai_move(decision)
             game_info = self.game.loop()
             self.game.draw('score')
 
@@ -69,24 +70,24 @@ def eval_genomes(genomes, config):
         
         
 def run_neat(config):
-    #p = neat.Checkpointer.restore_checkpoint('neat-checkpoint-00')
-    p = neat.Population(config)
+    p = neat.Checkpointer.restore_checkpoint('neat-checkpoint-3')
+    # p = neat.Population(config)
     p.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
     p.add_reporter(neat.Checkpointer(1))
     
-    winner = p.run(eval_genomes, 50)
+    winner = p.run(eval_genomes, 10)
     with open("best.pickle", "wb") as f:
         pickle.dump(winner, f)
         
 def test_best_network(config):
     with open("best.pickle", "rb") as f:
         winner = pickle.load(f)
-    winner_net = neat.nn.FeedForwardNetwork.create(winner, config)
+    # winner_net = neat.nn.FeedForwardNetwork.create(winner, config)
 
     pong = PongGame(pygame.display.set_mode([1100, 700]))
-    pong.test_ai(config)
+    pong.test_ai(winner, config)
             
 if __name__ == "__main__":
     local_dir = os.path.dirname(__file__)
