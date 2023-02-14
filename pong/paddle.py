@@ -37,6 +37,22 @@ class Paddle():
             elif keys[pygame.K_DOWN]:
                 if (self.y + self.height < window_size[1]):
                     self.y += self.speed
+                    
+    def ai_move(self, direction, window_size, side):
+        if side == 'left':
+            if direction == 1:
+                if (self.y > 0):
+                    self.y -= self.speed
+            elif direction == 2:
+                if (self.y + self.height < window_size[1]):
+                    self.y += self.speed
+        if side == 'right':
+            if direction == 1:
+                if (self.y > 0):
+                    self.y -= self.speed
+            elif direction == 2:
+                if (self.y + self.height < window_size[1]):
+                    self.y += self.speed
             
                    
    

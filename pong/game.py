@@ -76,6 +76,11 @@ class Game():
         self.ball.move()
         self.paddle_left.move(self.WINDOW_SIZE, 'left')
         self.paddle_right.move(self.WINDOW_SIZE, 'right')
+        
+    def player_ai_move(self, direction):
+        self.ball.move()
+        self.paddle_left.move(self.WINDOW_SIZE, 'left')
+        self.paddle_right.ai_move(direction, self.WINDOW_SIZE, 'right')
     
     def loop(self):
         self.clock.tick(self.FPS)
@@ -86,6 +91,6 @@ class Game():
                 sys.exit()
         
         self.collision()          
-        self.move()
+        # self.move()
         self.draw()
         
