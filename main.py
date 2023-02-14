@@ -30,22 +30,25 @@ class PongGame():
         net2 = neat.nn.FeedForwardNetwork.create(genome2, config)
         
         
-        
         while self.run:
             
             output1 = net1.activate((self.game.paddle_left.y, self.game.ball.y, abs(self.game.paddle_left.x - self.game.ball.x)))
-            output2 = net2.activate((self.game.paddle_left.y, self.game.ball.y, abs(self.game.paddle_right.x - self.game.ball.x)))
-            print(output1, output2)
+            decision1 = output1.index(max(output1))
+            output2 = net2.activate((self.game.paddle_right.y, self.game.ball.y, abs(self.game.paddle_right.x - self.game.ball.x)))
+            decision2 = output2.index(max(output2))
+            print(decision1, decision2)
+            self.game.ai_move(decision1, decision2)
             
             game_info = self.game.loop()
-            self.game.draw()
+            self.game.draw('hits')
             
-            if game_info.left_score >= 1 or game_info.right_score >= 1:
+            if game_info.left_score >= 1 or game_info.right_score >= 1 or game_info.left_hits > 50 or game_info.right_hits > 50:
                 self.calculate_fitness(genome1, genome2, game_info)
                 break
             
     def calculate_fitness(self, genome1, genome2, game_info):
-        pass
+        genome1.fitness += game_info.left_hits
+        genome2.fitness += game_info.right_hits
 
 def eval_genomes(genomes, config):
     WINDOW_SIZE = [1100, 700]
