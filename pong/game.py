@@ -15,7 +15,7 @@ class GameInformation:
 class Game():
     def __init__(self, window):
         # initializing variables
-        self.FPS = 60
+        self.FPS = 1000
         self.WINDOW_SIZE = [1100, 700]
         self.SCORE_FONT = pygame.font.SysFont("comicsans", 50)
 
@@ -68,15 +68,19 @@ class Game():
             end_continue   = origin[1] + (slope * (index + 1) * 12)
             pygame.draw.line(self.window, (255, 255, 255), (self.WINDOW_SIZE[0] / 2, start_continue), (self.WINDOW_SIZE[0] / 2, end_continue), 2)     
         
-    def draw_score(self):
-        left_score_text = self.SCORE_FONT.render(f"{self.left_score}", 1, (255, 255, 255))
-        right_score_text = self.SCORE_FONT.render(f"{self.right_score}", 1, (255, 255, 255))
+    def draw_score(self, hits):
+        if (hits != 'hits'):
+            left_score_text = self.SCORE_FONT.render(f"{self.left_score}", 1, (255, 255, 255))
+            right_score_text = self.SCORE_FONT.render(f"{self.right_score}", 1, (255, 255, 255))
+        else:
+            left_score_text = self.SCORE_FONT.render(f"{self.left_hits}", 1, (255, 255, 255))
+            right_score_text = self.SCORE_FONT.render(f"{self.right_hits}", 1, (255, 255, 255))
         
         self.window.blit(left_score_text, (self.WINDOW_SIZE[0] // 4 - left_score_text.get_width() // 2, 20))
         self.window.blit(right_score_text, (self.WINDOW_SIZE[0] * (3/4) - right_score_text.get_width() // 2, 20))
     
-    def draw(self):
-        self.draw_score()
+    def draw(self, hits):
+        self.draw_score(hits)
         self.draw_dashed_line((self.WINDOW_SIZE[0] / 2, 0), (self.WINDOW_SIZE[0] / 2, self.WINDOW_SIZE[1]))
         self.ball.draw(self.window)
         self.paddle_left.draw(self.window)
@@ -91,6 +95,10 @@ class Game():
     def player_ai_move(self, direction):
         self.paddle_left.move(self.WINDOW_SIZE, 'left')
         self.paddle_right.ai_move(direction, self.WINDOW_SIZE, 'right')
+        
+    def ai_move(self, output1, output2):
+        self.paddle_left.ai_move(output1, self.WINDOW_SIZE, 'left')
+        self.paddle_right.ai_move(output2, self.WINDOW_SIZE, 'right')
     
     def loop(self):
         self.clock.tick(self.FPS)
