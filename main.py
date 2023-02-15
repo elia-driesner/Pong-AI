@@ -70,7 +70,7 @@ def eval_genomes(genomes, config):
         
         
 def run_neat(config):
-    p = neat.Checkpointer.restore_checkpoint('neat-checkpoint-3')
+    p = neat.Checkpointer.restore_checkpoint('neat-checkpoint-10')
     # p = neat.Population(config)
     p.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
@@ -97,7 +97,7 @@ if __name__ == "__main__":
                          neat.DefaultSpeciesSet, neat.DefaultStagnation,
                          config_path)
     
-    run_neat(config)
-    # test_best_network(config)
+    # run_neat(config)
+    test_best_network(config)
     
     

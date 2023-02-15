@@ -33,6 +33,8 @@ class Game():
         self.left_hits = 0
         self.right_hits = 0
         
+        self.last_hit = 'center'
+        
     def collision(self):
         if self.ball.y <= 0:
             self.ball.y_speed *= -1
@@ -48,13 +50,21 @@ class Game():
         
         collide = pygame.Rect.colliderect(self.paddle_left.rect, self.ball.rect)
         if collide:
-            self.left_hits += 1
+            if self.last_hit != 'left':
+                self.left_hits += 1
+            self.last_hit = 'left'
             self.ball.x_speed *= -1
+            self.ball.x += 5
+            self.ball.y += 5
         
         collide = pygame.Rect.colliderect(self.paddle_right.rect, self.ball.rect)
         if collide:
-            self.right_hits += 1
-            self.ball.x_speed *= -1    
+            if self.last_hit != 'right':
+                self.right_hits += 1
+            self.last_hit = 'right'
+            self.ball.x_speed *= -1
+            self.ball.x -= 5
+            self.ball.y += 5
     
     def draw_dashed_line(self, start, end):
         origin = start
