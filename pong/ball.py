@@ -6,7 +6,7 @@ class Ball():
         self.color = pygame.Color(255, 255, 255)
         self.radius = 10
         self.x, self.y = x, y
-        self.x_speed, self.y_speed = random.choice([-5, 5]), random.choice([-5, 5])
+        self.x_speed, self.y_speed = random.choice([-7, 7]), random.choice([-7, 7])
         self.rect = pygame.Rect(self.x - self.radius, self.y - self.radius, self.radius*2, self.radius*2)
         
         
